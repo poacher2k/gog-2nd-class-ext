@@ -31,18 +31,19 @@ const fieldIconMap = {
 	'Region Locking': '🔒',
 };
 
+const INFO_WRAPPER_ID = 'gog-2nd-class-ext-info-wrapper';
+
 const addEntryInfo = (entry: Entry) => {
 	const issuesCount = entry['Issue #'];
 
 	const productActions =
 		document.querySelector<HTMLDivElement>('.product-actions');
 
-	console.log('productActions', productActions);
-
 	const infoWrapper = document.createElement('div');
 	infoWrapper.style.marginTop = '16px';
 	infoWrapper.style.fontSize = '20px';
 	infoWrapper.style.textAlign = 'center';
+	infoWrapper.id = INFO_WRAPPER_ID;
 
 	const warning = document.createElement('div');
 	warning.innerText = `⚠ Warning, ${issuesCount} issues ⚠`;
@@ -93,6 +94,6 @@ const title = h1.innerText.toLowerCase();
 
 const entry = data[title];
 
-if (entry) {
+if (entry && !document.querySelector(`#${INFO_WRAPPER_ID}`)) {
 	addEntryInfo(entry);
 }
