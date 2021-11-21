@@ -4,9 +4,12 @@
 	"description": "Adds information about whether or not a game is on the list of Games that treat GOG customers as 2nd Class @ https://docs.google.com/spreadsheets/d/1zjwUN1mtJdCkgtTDRB2IoFp7PP41fraY-oFNY00fEkI/",
 	"main": "index.js",
 	"scripts": {
-		"start": "web-ext run --firefox=firefoxdeveloperedition --start-url=\"https://www.gog.com/game/a_hat_in_time\"",
-		"build": "esbuild app.js --outdir=dist --bundle",
-		"watch": "npm run build -- --watch"
+		"start": "web-ext run --start-url=\"https://www.gog.com/game/a_hat_in_time\"",
+		"start:ffdev": "web-ext run --firefox=firefoxdeveloperedition --start-url=\"https://www.gog.com/game/a_hat_in_time\"",
+		"build": "esbuild app.ts --outdir=dist --bundle",
+		"watch": "npm run build -- --watch",
+		"parser": "node parser.js",
+		"lint": "web-ext lint"
 	},
 	"keywords": [],
 	"author": "",

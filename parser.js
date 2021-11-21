@@ -19,6 +19,8 @@ const parser = Papa.parse(readStream, {
 		results.data.forEach((value, index) => {
 			value.url = getUrl(index);
 
+			delete value[''];
+
 			data[value.Title.toLowerCase()] = value;
 		});
 
