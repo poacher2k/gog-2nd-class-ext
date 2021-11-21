@@ -153,3 +153,5 @@ dist
 data.json
 raw-data.csv
 wrangler.toml
+web-ext-artifacts
+.web-extension-id

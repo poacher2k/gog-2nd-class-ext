@@ -9,7 +9,9 @@
 		"build": "esbuild app.ts --outdir=dist --bundle",
 		"watch": "npm run build -- --watch",
 		"parser": "node parser.js",
-		"lint": "web-ext lint"
+		"lint": "web-ext lint",
+		"sign": "web-ext sign",
+		"build-ext": "web-ext build"
 	},
 	"keywords": [],
 	"author": "",
