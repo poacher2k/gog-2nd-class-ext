@@ -1,0 +1,17 @@
+{
+	"description": "Adds information about whether or not a game is on the list of Games that treat GOG customers as 2nd Class @ https://docs.google.com/spreadsheets/d/1zjwUN1mtJdCkgtTDRB2IoFp7PP41fraY-oFNY00fEkI/",
+	"manifest_version": 2,
+	"name": "GOG 2nd Class Helper",
+	"version": "1.0",
+	"homepage_url": "https://github.com/mdn/webextensions-examples/tree/master/borderify",
+	"icons": {
+		"48": "icons/border-48.png"
+	},
+
+	"content_scripts": [
+		{
+			"matches": ["https://www.gog.com/game/*"],
+			"js": ["index.js"]
+		}
+	]
+}
