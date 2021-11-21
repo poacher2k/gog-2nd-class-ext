@@ -146,3 +146,9 @@ dist
 
 # Support for Project snippet scope
 !.vscode/*.code-snippets
+
+
+### GOG 2nd class ext specifics ###
+
+data.json
+raw-data.csv

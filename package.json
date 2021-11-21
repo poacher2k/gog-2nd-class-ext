@@ -4,12 +4,15 @@
 	"description": "Adds information about whether or not a game is on the list of Games that treat GOG customers as 2nd Class @ https://docs.google.com/spreadsheets/d/1zjwUN1mtJdCkgtTDRB2IoFp7PP41fraY-oFNY00fEkI/",
 	"main": "index.js",
 	"scripts": {
-		"run": "web-ext run"
+		"start": "web-ext run --firefox=firefoxdeveloperedition --start-url=\"https://www.gog.com/game/a_hat_in_time\"",
+		"build": "esbuild app.js --outdir=dist --bundle",
+		"watch": "npm run build -- --watch"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"esbuild": "^0.13.15",
 		"papaparse": "^5.3.1",
 		"web-ext": "^6.5.0"
 	}
