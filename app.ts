@@ -31,6 +31,24 @@ const fieldIconMap = {
 	'Region Locking': '🔒',
 };
 
+const BORDER_STYLE_ID = 'GOG_2ND_CLASS_EXT_BORDER_STYLE';
+const BORDER_STYLE_CLASS = 'GOG_2ND_CLASS_EXT_BORDER';
+
+if (!document.querySelector(`#${BORDER_STYLE_ID}`)) {
+	const borderStyle = document.createElement('style');
+	borderStyle.id = BORDER_STYLE_ID;
+	borderStyle.textContent = `
+	.${BORDER_STYLE_CLASS} {
+		border: 5px solid #f25100;
+	}
+	.${BORDER_STYLE_CLASS} + .${BORDER_STYLE_CLASS} {
+		border-top: none;
+	}
+
+	`;
+	document.head.appendChild(borderStyle);
+}
+
 const INFO_WRAPPER_ID = 'gog-2nd-class-ext-info-wrapper';
 
 const addEntryInfo = (entry: Entry) => {
@@ -39,6 +57,10 @@ const addEntryInfo = (entry: Entry) => {
 	const productActions =
 		document.querySelector<HTMLDivElement>('.product-actions');
 
+	if (!productActions) {
+		return;
+	}
+
 	const infoWrapper = document.createElement('div');
 	infoWrapper.style.marginTop = '16px';
 	infoWrapper.style.fontSize = '20px';
@@ -46,7 +68,7 @@ const addEntryInfo = (entry: Entry) => {
 	infoWrapper.id = INFO_WRAPPER_ID;
 
 	const warning = document.createElement('div');
-	warning.innerText = `⚠ Warning, ${issuesCount} issues ⚠`;
+	warning.innerText = `⚠ ${issuesCount} issues ⚠`;
 	warning.style.textTransform = 'uppercase';
 	warning.style.marginBottom = '10px';
 
@@ -86,14 +108,78 @@ const addEntryInfo = (entry: Entry) => {
 
 	productActions.appendChild(infoWrapper);
 
-	productActions.style.border = '5px solid #f25100';
+	productActions.classList.add(BORDER_STYLE_CLASS);
 };
 
-const h1 = document.querySelector('h1');
-const title = h1.innerText.toLowerCase();
+const addCheckoutBorders = () => {
+	const items = document.querySelectorAll<HTMLDivElement>(
+		'.form.order__games .product-row.is-in-cart'
+	);
 
-const entry = data[title];
+	items.forEach((item) => {
+		const titleEl = item.querySelector<HTMLSpanElement>(
+			'.product-title__text'
+		);
+		const title = titleEl.innerText.toLowerCase();
 
-if (entry && !document.querySelector(`#${INFO_WRAPPER_ID}`)) {
-	addEntryInfo(entry);
+		const entry = data[title];
+
+		if (entry) {
+			item.classList.add(BORDER_STYLE_CLASS);
+		}
+	});
+};
+
+const pathname = location.pathname;
+
+if (pathname.startsWith('/game/')) {
+	const h1 = document.querySelector('h1');
+	const title = h1.innerText.toLowerCase();
+
+	const entry = data[title];
+
+	if (entry && !document.querySelector(`#${INFO_WRAPPER_ID}`)) {
+		addEntryInfo(entry);
+	}
+} else if (pathname.startsWith('/checkout/')) {
+	const checkoutOrder =
+		document.querySelector<HTMLDivElement>('.order.container');
+
+	const checkoutObserver = new MutationObserver(addCheckoutBorders);
+
+	checkoutObserver.observe(checkoutOrder, { subtree: true, childList: true });
+
+	addCheckoutBorders();
 }
+
+const cart = document.querySelector<HTMLDivElement>(
+	'.menu-cart__products-list'
+);
+
+const addCartBorders = () => {
+	const items = cart.querySelectorAll<HTMLDivElement>(
+		'.menu-cart__products-list .menu-cart-item.is-in-cart'
+	);
+
+	items.forEach((item) => {
+		const titleEl = item.querySelector<HTMLDivElement>(
+			'.menu-cart-item__title'
+		);
+
+		const title = titleEl.innerText.toLowerCase();
+
+		const entry = data[title];
+
+		if (entry) {
+			item.classList.add(BORDER_STYLE_CLASS);
+			const img = item.querySelector<HTMLImageElement>(
+				'img.menu-cart-item__image'
+			);
+			img.style.height = 'calc(100% - 10px)';
+		}
+	});
+};
+
+const cartObserver = new MutationObserver(addCartBorders);
+
+cartObserver.observe(cart, { subtree: true, childList: true });
