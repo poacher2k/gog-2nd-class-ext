@@ -38,13 +38,12 @@ if (!document.querySelector(`#${BORDER_STYLE_ID}`)) {
 	const borderStyle = document.createElement('style');
 	borderStyle.id = BORDER_STYLE_ID;
 	borderStyle.textContent = `
-	.${BORDER_STYLE_CLASS} {
-		border: 5px solid #f25100;
-	}
-	.${BORDER_STYLE_CLASS} + .${BORDER_STYLE_CLASS} {
-		border-top: none;
-	}
-
+.${BORDER_STYLE_CLASS} {
+	border: 5px solid #f25100 !important;
+}
+.${BORDER_STYLE_CLASS} + .${BORDER_STYLE_CLASS} {
+	border-top: none !important;
+}
 	`;
 	document.head.appendChild(borderStyle);
 }
