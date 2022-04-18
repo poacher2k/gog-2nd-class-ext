@@ -1,6 +1,6 @@
 {
 	"name": "gog-2nd-class-ext",
-	"version": "1.2.1",
+	"version": "2.0.0",
 	"description": "Adds information about whether or not a game is on the list of Games that treat GOG customers as 2nd Class @ https://docs.google.com/spreadsheets/d/1zjwUN1mtJdCkgtTDRB2IoFp7PP41fraY-oFNY00fEkI/",
 	"main": "index.js",
 	"scripts": {
