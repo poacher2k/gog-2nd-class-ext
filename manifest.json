@@ -8,6 +8,10 @@
 		"48": "icon-48.png",
 		"96": "icon-96.png"
 	},
+	"permissions": [
+		"storage",
+		"https://docs.google.com/spreadsheets/d/1zjwUN1mtJdCkgtTDRB2IoFp7PP41fraY-oFNY00fEkI/gviz/tq"
+	],
 
 	"content_scripts": [
 		{

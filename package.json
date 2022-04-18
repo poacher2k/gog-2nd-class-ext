@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "web-ext run --start-url=\"https://www.gog.com/game/a_hat_in_time\"",
 		"start:ffdev": "web-ext run --firefox=firefoxdeveloperedition --start-url=\"https://www.gog.com/game/a_hat_in_time\"",
-		"build": "esbuild app.ts --outdir=dist --bundle",
+		"build": "esbuild src/app.ts --outdir=dist --bundle",
 		"watch": "npm run build -- --watch",
 		"parser": "node parser.js",
 		"lint": "web-ext lint",
@@ -18,7 +18,10 @@
 	"license": "ISC",
 	"dependencies": {
 		"esbuild": "^0.13.15",
-		"papaparse": "^5.3.1",
+		"papaparse": "^5.3.2",
 		"web-ext": "^6.5.0"
+	},
+	"devDependencies": {
+		"web-ext-types": "^3.2.1"
 	}
 }
