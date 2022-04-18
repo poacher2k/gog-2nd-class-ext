@@ -156,3 +156,4 @@ wrangler.toml
 web-ext-artifacts
 .web-extension-id
 Archive.zip
+.DS_Store
