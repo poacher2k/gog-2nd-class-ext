@@ -56,7 +56,9 @@ const getData = async () => {
 
 	const newData = await fetchGamesFromSheet();
 
-	await setStorageData(newData);
+	if (newData) {
+		await setStorageData(newData);
+	}
 
 	return newData;
 };

@@ -18,6 +18,8 @@ const fieldIconMap = {
 const BORDER_STYLE_ID = 'GOG_2ND_CLASS_EXT_BORDER_STYLE';
 const BORDER_STYLE_CLASS = 'GOG_2ND_CLASS_EXT_BORDER';
 const INFO_WRAPPER_ID = 'gog-2nd-class-ext-info-wrapper';
+const PATHNAME_GAME_REGEX = /^(?:\/\w\w)?\/game\//;
+const PATHNAME_CHECKOUT_REGEX = /^(?:\/\w\w)?\/checkout\//;
 
 const addBorderStyleTag = () => {
 	if (!document.querySelector(`#${BORDER_STYLE_ID}`)) {
@@ -151,7 +153,10 @@ const init = async () => {
 
 	const pathname = location.pathname;
 
-	if (pathname.startsWith('/game/')) {
+	const isGamePath = PATHNAME_GAME_REGEX.test(pathname);
+	const isCheckoutPath = PATHNAME_CHECKOUT_REGEX.test(pathname);
+
+	if (isGamePath) {
 		const h1 = document.querySelector('h1');
 		const title = h1.innerText.toLowerCase();
 
@@ -160,7 +165,7 @@ const init = async () => {
 		if (entry && !document.querySelector(`#${INFO_WRAPPER_ID}`)) {
 			addEntryInfo(entry);
 		}
-	} else if (pathname.startsWith('/checkout/')) {
+	} else if (isCheckoutPath) {
 		const checkoutOrder =
 			document.querySelector<HTMLDivElement>('.order.container');
 
