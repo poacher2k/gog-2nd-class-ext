@@ -1,7 +1,7 @@
 import whitelist from '../whitelist';
 import getData from './utils/getData';
 
-import type { Entry } from './utils/fetchGamesFromSheet';
+import type { IFinalEntry } from './utils/fetchGamesFromSheet';
 
 const fieldIconMap = {
 	'Missing Updates': '🔃',
@@ -13,6 +13,9 @@ const fieldIconMap = {
 	Other: '➕',
 	'Missing Builds': '🧱',
 	'Region Locking': '🔒',
+	'Missing All Achievements': '🥇',
+	'Missing Some Achievements': '🥈',
+	'Broken Achievements': '🥉',
 };
 
 const BORDER_STYLE_ID = 'GOG_2ND_CLASS_EXT_BORDER_STYLE';
@@ -41,8 +44,9 @@ const cart = document.querySelector<HTMLDivElement>(
 	'.menu-cart__products-list'
 );
 
-const addEntryInfo = (entry: Entry) => {
+const addEntryInfo = (entry: IFinalEntry) => {
 	const issuesCount = entry['Issue #'];
+	const hasSingleIssue = issuesCount === '1';
 
 	const productActions =
 		document.querySelector<HTMLDivElement>('.product-actions');
@@ -58,9 +62,7 @@ const addEntryInfo = (entry: Entry) => {
 	infoWrapper.id = INFO_WRAPPER_ID;
 
 	const warning = document.createElement('div');
-	warning.innerText = `⚠ ${issuesCount} issue${
-		issuesCount === '1' ? '' : 's'
-	} ⚠`;
+	warning.innerText = `⚠ ${issuesCount} issue${hasSingleIssue ? '' : 's'} ⚠`;
 	warning.style.textTransform = 'uppercase';
 	warning.style.marginBottom = '10px';
 
@@ -75,9 +77,10 @@ const addEntryInfo = (entry: Entry) => {
 		const entryField = entry[key];
 
 		if (entryField) {
+			const initialNewLine = entryField.includes('\n') ? '\n' : ' ';
 			const span = document.createElement('span');
 			span.innerText = icon;
-			span.title = `${key}: ${entryField}`;
+			span.title = `${key}:${initialNewLine}${entryField}`;
 			span.style.cursor = 'help';
 			span.style.verticalAlign = 'baseline';
 			span.style.margin = '5px';
@@ -86,15 +89,37 @@ const addEntryInfo = (entry: Entry) => {
 		}
 	});
 
-	const link = document.createElement('a');
-	link.href = entry.url;
-	link.innerText = '🔗';
-	link.title = `Go to entry in spreadsheet`;
-	link.target = '_blank';
-	link.referrerPolicy = 'no-referrer';
-	link.style.cursor = 'pointer';
+	const separator = document.createElement('span');
+	separator.innerText = '|';
+	separator.style.margin = '5px';
 
-	fieldsWrapper.appendChild(link);
+	fieldsWrapper.appendChild(separator);
+
+	if (entry.url) {
+		const link = document.createElement('a');
+		link.href = entry.url;
+		link.innerText = '🔗';
+		link.title = `Go to entry in spreadsheet`;
+		link.target = '_blank';
+		link.referrerPolicy = 'no-referrer';
+		link.style.margin = '5px';
+		link.style.cursor = 'pointer';
+
+		fieldsWrapper.appendChild(link);
+	}
+
+	if (entry.achievementsUrl) {
+		const link = document.createElement('a');
+		link.href = entry.achievementsUrl;
+		link.innerText = '🏆';
+		link.title = `Go to entry in achievements spreadsheet`;
+		link.target = '_blank';
+		link.referrerPolicy = 'no-referrer';
+		link.style.margin = '5px';
+		link.style.cursor = 'pointer';
+
+		fieldsWrapper.appendChild(link);
+	}
 
 	infoWrapper.appendChild(fieldsWrapper);
 
@@ -161,6 +186,8 @@ const init = async () => {
 		const title = h1.innerText.toLowerCase();
 
 		const entry = data[title];
+
+		console.info('2nd Class Helper Entry?', entry);
 
 		if (entry && !document.querySelector(`#${INFO_WRAPPER_ID}`)) {
 			addEntryInfo(entry);

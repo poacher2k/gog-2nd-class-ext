@@ -1,6 +1,8 @@
 import fetchGamesFromSheet from './fetchGamesFromSheet';
 
-import type { Entry } from './fetchGamesFromSheet';
+import type { IFinalEntry } from './fetchGamesFromSheet';
+
+var browser = browser || chrome;
 
 const DATA_STORAGE_KEY = 'gog-2nd-helper-data';
 const LAST_FETCHED_STORAGE_KEY = 'gog-2nd-helper-last-fetched';
@@ -48,10 +50,14 @@ const setStorageData = async (data) => {
 };
 
 const getData = async () => {
-	const storedData = (await getStorageData()) as Record<string, Entry>;
+	const storedData = (await getStorageData()) as Record<string, IFinalEntry>;
 
 	if (storedData) {
-		return storedData;
+		const thousandXResist = storedData['1000xresist'];
+
+		if (thousandXResist && thousandXResist.achievementsUrl) {
+			return storedData;
+		}
 	}
 
 	const newData = await fetchGamesFromSheet();
