@@ -1,7 +1,16 @@
 import whitelist from '../whitelist';
 import getData from './utils/getData';
+import {
+	buildCompanyCounts,
+	getCompanyWarningStyle,
+	getMaxCount,
+	normalizeCompany,
+	DEVELOPER_WARNING_THRESHOLD,
+	PUBLISHER_WARNING_THRESHOLD,
+} from './utils/companyFrequency';
 
 import type { IFinalEntry } from './utils/fetchGamesFromSheet';
+import type { ICompanyFrequency } from './utils/companyFrequency';
 
 const fieldIconMap = {
 	'Missing Updates': '🔃',
@@ -21,6 +30,7 @@ const fieldIconMap = {
 const BORDER_STYLE_ID = 'GOG_2ND_CLASS_EXT_BORDER_STYLE';
 const BORDER_STYLE_CLASS = 'GOG_2ND_CLASS_EXT_BORDER';
 const INFO_WRAPPER_ID = 'gog-2nd-class-ext-info-wrapper';
+const COMPANY_TINTED_ATTR = 'data-gog-2nd-class-company-tinted';
 const PATHNAME_GAME_REGEX = /^(?:\/\w\w)?\/game\//;
 const PATHNAME_CHECKOUT_REGEX = /^(?:\/\w\w)?\/checkout\//;
 
@@ -147,6 +157,82 @@ const addCheckoutBorders = (data) => {
 	});
 };
 
+// Finds the "Company:" details row and tints the developer/publisher links
+// based on how many games each company has on the list. Returns true once the
+// company row is found (so a watcher can stop), regardless of whether anything
+// was tinted.
+const addCompanyWarnings = (frequency: ICompanyFrequency): boolean => {
+	const rows = document.querySelectorAll<HTMLDivElement>('.details__row');
+
+	let companyContent: HTMLElement | null = null;
+
+	rows.forEach((row) => {
+		const label = row.querySelector<HTMLElement>('.table__row-label');
+
+		if (label && /company/i.test(label.innerText)) {
+			companyContent =
+				row.querySelector<HTMLElement>('.details__content');
+		}
+	});
+
+	if (!companyContent) {
+		return false;
+	}
+
+	const devMax = getMaxCount(frequency.developerCounts);
+	const pubMax = getMaxCount(frequency.publisherCounts);
+
+	const links = companyContent.querySelectorAll<HTMLAnchorElement>('a');
+
+	links.forEach((link) => {
+		if (link.hasAttribute(COMPANY_TINTED_ATTR)) {
+			return;
+		}
+
+		const href = link.getAttribute('href') ?? '';
+
+		let counts = null;
+		let max = 0;
+		let threshold = 0;
+		let role = '';
+
+		if (href.includes('developers=')) {
+			counts = frequency.developerCounts;
+			max = devMax;
+			threshold = DEVELOPER_WARNING_THRESHOLD;
+			role = 'developer';
+		} else if (href.includes('publishers=')) {
+			counts = frequency.publisherCounts;
+			max = pubMax;
+			threshold = PUBLISHER_WARNING_THRESHOLD;
+			role = 'publisher';
+		}
+
+		if (!counts) {
+			return;
+		}
+
+		const count = counts[normalizeCompany(link.innerText)] ?? 0;
+		const style = getCompanyWarningStyle(count, max, threshold);
+
+		link.setAttribute(COMPANY_TINTED_ATTR, 'true');
+
+		if (!style) {
+			return;
+		}
+
+		link.style.backgroundColor = style.background;
+		link.style.color = style.color;
+		link.style.padding = '2px 6px';
+		link.style.borderRadius = '3px';
+		link.title = `${count} game${
+			count === 1 ? '' : 's'
+		} on the 2nd-class list (${role})`;
+	});
+
+	return true;
+};
+
 const init = async () => {
 	addBorderStyleTag();
 
@@ -191,6 +277,21 @@ const init = async () => {
 
 		if (entry && !document.querySelector(`#${INFO_WRAPPER_ID}`)) {
 			addEntryInfo(entry);
+		}
+
+		const frequency = buildCompanyCounts(data);
+
+		if (!addCompanyWarnings(frequency)) {
+			const companyObserver = new MutationObserver(() => {
+				if (addCompanyWarnings(frequency)) {
+					companyObserver.disconnect();
+				}
+			});
+
+			companyObserver.observe(document.body, {
+				subtree: true,
+				childList: true,
+			});
 		}
 	} else if (isCheckoutPath) {
 		const checkoutOrder =
