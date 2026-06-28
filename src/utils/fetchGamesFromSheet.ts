@@ -36,7 +36,7 @@ export type IGames = Record<string, IFinalEntry>;
 
 const GAMES_INDEX_OFFSET = 7; // to offset the "Stats"-section and headers of the sheet
 const GAMES_ACTUAL_HEADER_DELIMITER = `"Title","","Developer","Publisher","Missing Updates"`;
-const GAMES_DOC_ID = `1zjwUN1mtJdCkgtTDRB2IoFp7PP41fraY-oFNY00fEkI`;
+const GAMES_DOC_ID = `14haGnU2kcY6wV6ssBeyW6_mMk6kkVqZX-QvMKlgXGu0`;
 const GAMES_SHEET_URL = `https://docs.google.com/spreadsheets/d/${GAMES_DOC_ID}/gviz/tq?tqx=out:csv&headers=0`;
 
 const ACHIVEMENTS_INDEX_OFFSET = 4; // to offset the "Stats"-section and headers of the sheet
