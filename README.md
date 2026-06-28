@@ -2,7 +2,7 @@
 
 ## Description
 
-A WebExtension that uses data from the [Games that treat GOG customers as 2nd Class v2](https://docs.google.com/spreadsheets/d/14haGnU2kcY6wV6ssBeyW6_mMk6kkVqZX-QvMKlgXGu0/edit#gid=0) spreadsheet and displays it on the GOG store
+A WebExtension that uses data from the [Games that treat GOG customers as 2nd Class v3](https://docs.google.com/spreadsheets/d/14haGnU2kcY6wV6ssBeyW6_mMk6kkVqZX-QvMKlgXGu0/edit#gid=0) spreadsheet and displays it on the GOG store
 
 ## Setup
 
