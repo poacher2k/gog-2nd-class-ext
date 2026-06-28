@@ -1,27 +1,27 @@
 {
-	"name": "gog-2nd-class-ext",
-	"version": "2.2.0",
-	"description": "Adds information about whether or not a game is on the list of Games that treat GOG customers as 2nd Class @ https://docs.google.com/spreadsheets/d/1zjwUN1mtJdCkgtTDRB2IoFp7PP41fraY-oFNY00fEkI/",
-	"main": "index.js",
-	"scripts": {
-		"start": "web-ext run --start-url=\"https://www.gog.com/game/a_hat_in_time\"",
-		"start:ffdev": "web-ext run --firefox=firefoxdeveloperedition --start-url=\"https://www.gog.com/game/a_hat_in_time\"",
-		"build": "esbuild src/app.ts --outdir=dist --bundle",
-		"watch": "npm run build -- --watch",
-		"parser": "node parser.js",
-		"lint": "web-ext lint",
-		"sign": "web-ext sign",
-		"build-ext": "web-ext build --overwrite-dest"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"dependencies": {
-		"esbuild": "^0.28.1",
-		"papaparse": "^5.5.4",
-		"web-ext": "^10.4.0"
-	},
-	"devDependencies": {
-		"web-ext-types": "^3.2.1"
-	}
+  "name": "gog-2nd-class-ext",
+  "version": "2.3.0",
+  "description": "Adds information about whether or not a game is on the list of Games that treat GOG customers as 2nd Class @ https://docs.google.com/spreadsheets/d/1zjwUN1mtJdCkgtTDRB2IoFp7PP41fraY-oFNY00fEkI/",
+  "main": "index.js",
+  "scripts": {
+    "start": "web-ext run --start-url=\"https://www.gog.com/game/a_hat_in_time\"",
+    "start:ffdev": "web-ext run --firefox=firefoxdeveloperedition --start-url=\"https://www.gog.com/game/a_hat_in_time\"",
+    "build": "esbuild src/app.ts --outdir=dist --bundle",
+    "watch": "npm run build -- --watch",
+    "parser": "node parser.js",
+    "lint": "web-ext lint",
+    "sign": "web-ext sign",
+    "build-ext": "web-ext build --overwrite-dest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "esbuild": "^0.28.1",
+    "papaparse": "^5.5.4",
+    "web-ext": "^10.4.0"
+  },
+  "devDependencies": {
+    "web-ext-types": "^3.2.1"
+  }
 }

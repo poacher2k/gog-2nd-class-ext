@@ -2,13 +2,15 @@
   "description": "Adds information about whether or not a game is on the list of Games that treat GOG customers as 2nd Class @ https://docs.google.com/spreadsheets/d/1zjwUN1mtJdCkgtTDRB2IoFp7PP41fraY-oFNY00fEkI/",
   "manifest_version": 2,
   "name": "GOG 2nd Class Helper",
-  "version": "2.2",
+  "version": "2.3",
   "homepage_url": "https://github.com/poacher2k/gog-2nd-class-ext",
   "browser_specific_settings": {
     "gecko": {
       "id": "{0c2c1d5d-7040-4499-9d29-bff606d963e6}",
       "data_collection_permissions": {
-        "required": ["none"]
+        "required": [
+          "none"
+        ]
       }
     }
   },
