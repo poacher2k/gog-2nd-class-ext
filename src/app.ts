@@ -159,21 +159,27 @@ const addCheckoutBorders = (data) => {
 	});
 };
 
-// Finds the "Company:" details row and tints the developer/publisher links
-// based on how many games each company has on the list. Returns true once the
-// company row is found (so a watcher can stop), regardless of whether anything
-// was tinted.
+// Finds the company details row and tints the developer/publisher links based
+// on how many games each company has on the list. Returns true once the company
+// row is found (so a watcher can stop), regardless of whether anything was
+// tinted.
+//
+// The row is located by the presence of developer/publisher links rather than
+// the row label, since the label is translated on localized pages (e.g.
+// /pl/game/...) while the link hrefs stay the same in every locale.
+const COMPANY_LINK_SELECTOR =
+	'a[href*="developers="], a[href*="publishers="]';
+
 const addCompanyWarnings = (frequency: ICompanyFrequency): boolean => {
 	const rows = document.querySelectorAll<HTMLDivElement>('.details__row');
 
 	let companyContent: HTMLElement | null = null;
 
 	rows.forEach((row) => {
-		const label = row.querySelector<HTMLElement>('.table__row-label');
+		const content = row.querySelector<HTMLElement>('.details__content');
 
-		if (label && /company/i.test(label.innerText)) {
-			companyContent =
-				row.querySelector<HTMLElement>('.details__content');
+		if (content && content.querySelector(COMPANY_LINK_SELECTOR)) {
+			companyContent = content;
 		}
 	});
 
