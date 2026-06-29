@@ -60,6 +60,25 @@ export const getMaxCount = (counts: ICompanyCounts): number => {
 	return values.length ? Math.max(...values) : 0;
 };
 
+export type ICompanyRank = {
+	rank: number; // 1-based; ties share the best rank (1, 1, 3, ...)
+	total: number; // how many distinct companies appear in this role
+};
+
+// Ranks a company within its role by how many games it has on the list.
+// Uses competition ranking, so tied companies share the same rank (the two
+// 29-game publishers are both #1, the next is #3).
+export const getCompanyRank = (
+	count: number,
+	counts: ICompanyCounts
+): ICompanyRank => {
+	const values = Object.values(counts);
+
+	const higher = values.filter((value) => value > count).length;
+
+	return { rank: higher + 1, total: values.length };
+};
+
 export type ICompanyWarningStyle = {
 	background: string;
 	color: string;

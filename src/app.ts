@@ -2,6 +2,7 @@ import whitelist from '../whitelist';
 import getData from './utils/getData';
 import {
 	buildCompanyCounts,
+	getCompanyRank,
 	getCompanyWarningStyle,
 	getMaxCount,
 	normalizeCompany,
@@ -31,6 +32,7 @@ const BORDER_STYLE_ID = 'GOG_2ND_CLASS_EXT_BORDER_STYLE';
 const BORDER_STYLE_CLASS = 'GOG_2ND_CLASS_EXT_BORDER';
 const INFO_WRAPPER_ID = 'gog-2nd-class-ext-info-wrapper';
 const COMPANY_TINTED_ATTR = 'data-gog-2nd-class-company-tinted';
+const RANK_TITLE_LIMIT = 20;
 const PATHNAME_GAME_REGEX = /^(?:\/\w\w)?\/game\//;
 const PATHNAME_CHECKOUT_REGEX = /^(?:\/\w\w)?\/checkout\//;
 
@@ -225,9 +227,19 @@ const addCompanyWarnings = (frequency: ICompanyFrequency): boolean => {
 		link.style.color = style.color;
 		link.style.padding = '2px 6px';
 		link.style.borderRadius = '3px';
-		link.title = `${count} game${
+
+		const { rank, total } = getCompanyRank(count, counts);
+		const baseTitle = `${count} game${
 			count === 1 ? '' : 's'
-		} on the 2nd-class list (${role})`;
+		} on the 2nd-class list`;
+
+		// Only the top-ranked companies get a rank in the tooltip; the rest
+		// just note the role.
+		if (rank <= RANK_TITLE_LIMIT) {
+			link.title = `${baseTitle} — #${rank} of ${total} ${role}s`;
+		} else {
+			link.title = `${baseTitle} (${role})`;
+		}
 	});
 
 	return true;
