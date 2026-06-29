@@ -24,11 +24,20 @@ export const normalizeCompany = (name: string): string =>
 // Builds developer/publisher frequency maps from the games list, counting each
 // game once per field. Matching is exact-normalized (compound fields like
 // "X and Y" only count toward the full string, not the parts).
+//
+// Only entries from the games sheet are counted (they always carry a `url`).
+// The achievements sheet is merged into the same map but adds achievement-only
+// titles with no `url`; counting those would roughly double prolific
+// publishers (e.g. Devolver Digital 29 -> 60).
 export const buildCompanyCounts = (games: IGames): ICompanyFrequency => {
 	const developerCounts: ICompanyCounts = {};
 	const publisherCounts: ICompanyCounts = {};
 
 	Object.values(games).forEach((entry) => {
+		if (!entry.url) {
+			return;
+		}
+
 		const developerKey = normalizeCompany(entry.Developer);
 		if (developerKey) {
 			developerCounts[developerKey] =
