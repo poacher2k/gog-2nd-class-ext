@@ -10,10 +10,11 @@ import {
 	PUBLISHER_WARNING_THRESHOLD,
 } from './utils/companyFrequency';
 
-import type { IFinalEntry } from './utils/fetchGamesFromSheet';
+import type { IFinalEntry, IGames } from './utils/fetchGamesFromSheet';
 import type { ICompanyFrequency } from './utils/companyFrequency';
+import { getEntryFromData } from './utils/getEntryFromData';
 
-const fieldIconMap = {
+const fieldIconMap: Partial<Record<keyof IFinalEntry, string>> = {
 	'Missing Updates': '🔃',
 	'Missing Languages': '🌍',
 	'Missing Free DLC': '🆓',
@@ -52,9 +53,7 @@ const addBorderStyleTag = () => {
 	}
 };
 
-const cart = document.querySelector<HTMLDivElement>(
-	'.menu-cart__products-list'
-);
+const cart = document.querySelector<HTMLDivElement>('.menu-v3__cart-list');
 
 const addEntryInfo = (entry: IFinalEntry) => {
 	const issuesCount = entry['Issue #'];
@@ -85,7 +84,8 @@ const addEntryInfo = (entry: IFinalEntry) => {
 	fieldsWrapper.style.alignItems = 'center';
 	fieldsWrapper.style.justifyContent = 'center';
 
-	Object.entries(fieldIconMap).map(([key, icon]) => {
+	Object.entries(fieldIconMap).map(([_key, icon]) => {
+		const key = _key as keyof IFinalEntry;
 		const entryField = entry[key];
 
 		if (entryField) {
@@ -140,18 +140,16 @@ const addEntryInfo = (entry: IFinalEntry) => {
 	productActions.classList.add(BORDER_STYLE_CLASS);
 };
 
-const addCheckoutBorders = (data) => {
+const addCheckoutBorders = (data: IGames) => {
 	const items = document.querySelectorAll<HTMLDivElement>(
-		'.form.order__games .product-row.is-in-cart'
+		'coa-cart-section coa-product-item-wrapper'
 	);
 
 	items.forEach((item) => {
 		const titleEl = item.querySelector<HTMLSpanElement>(
-			'.product-title__text'
+			'.product-item__title'
 		);
-		const title = titleEl.innerText.toLowerCase();
-
-		const entry = data[title];
+		const entry = getEntryFromData(data, titleEl);
 
 		if (entry) {
 			item.classList.add(BORDER_STYLE_CLASS);
@@ -167,8 +165,7 @@ const addCheckoutBorders = (data) => {
 // The row is located by the presence of developer/publisher links rather than
 // the row label, since the label is translated on localized pages (e.g.
 // /pl/game/...) while the link hrefs stay the same in every locale.
-const COMPANY_LINK_SELECTOR =
-	'a[href*="developers="], a[href*="publishers="]';
+const COMPANY_LINK_SELECTOR = 'a[href*="developers="], a[href*="publishers="]';
 
 const addCompanyWarnings = (frequency: ICompanyFrequency): boolean => {
 	const rows = document.querySelectorAll<HTMLDivElement>('.details__row');
@@ -190,7 +187,9 @@ const addCompanyWarnings = (frequency: ICompanyFrequency): boolean => {
 	const devMax = getMaxCount(frequency.developerCounts);
 	const pubMax = getMaxCount(frequency.publisherCounts);
 
-	const links = companyContent.querySelectorAll<HTMLAnchorElement>('a');
+	const links = (
+		companyContent as HTMLElement
+	).querySelectorAll<HTMLAnchorElement>('a');
 
 	links.forEach((link) => {
 		if (link.hasAttribute(COMPANY_TINTED_ATTR)) {
@@ -257,25 +256,25 @@ const init = async () => {
 	const data = await getData();
 
 	const addCartBorders = () => {
-		const items = cart.querySelectorAll<HTMLDivElement>(
-			'.menu-cart__products-list .menu-cart-item.is-in-cart'
+		const items = cart?.querySelectorAll<HTMLDivElement>(
+			'.menu-v3__cart-list .menu-v3__cart-list-item.is-in-cart'
 		);
 
-		items.forEach((item) => {
+		items?.forEach((item) => {
 			const titleEl = item.querySelector<HTMLDivElement>(
-				'.menu-cart-item__title'
+				'.menu-v3__cart-row-title'
 			);
 
-			const title = titleEl.innerText.toLowerCase();
-
-			const entry = data[title];
+			const entry = getEntryFromData(data, titleEl);
 
 			if (entry) {
 				item.classList.add(BORDER_STYLE_CLASS);
 				const img = item.querySelector<HTMLImageElement>(
 					'img.menu-cart-item__image'
 				);
-				img.style.height = 'calc(100% - 10px)';
+				if (img) {
+					img.style.height = 'calc(100% - 10px)';
+				}
 			}
 		});
 	};
@@ -287,9 +286,8 @@ const init = async () => {
 
 	if (isGamePath) {
 		const h1 = document.querySelector('h1');
-		const title = h1.innerText.toLowerCase();
 
-		const entry = data[title];
+		const entry = getEntryFromData(data, h1);
 
 		console.info('2nd Class Helper Entry?', entry);
 
@@ -312,12 +310,13 @@ const init = async () => {
 			});
 		}
 	} else if (isCheckoutPath) {
-		const checkoutOrder =
-			document.querySelector<HTMLDivElement>('.order.container');
+		console.log('isCheckoutPath :>> ', isCheckoutPath);
 
-		const checkoutObserver = new MutationObserver(addCheckoutBorders);
+		const checkoutObserver = new MutationObserver(() =>
+			addCheckoutBorders(data)
+		);
 
-		checkoutObserver.observe(checkoutOrder, {
+		checkoutObserver.observe(document.body, {
 			subtree: true,
 			childList: true,
 		});
@@ -325,9 +324,11 @@ const init = async () => {
 		addCheckoutBorders(data);
 	}
 
-	const cartObserver = new MutationObserver(addCartBorders);
+	if (cart) {
+		const cartObserver = new MutationObserver(addCartBorders);
 
-	cartObserver.observe(cart, { subtree: true, childList: true });
+		cartObserver.observe(cart, { subtree: true, childList: true });
+	}
 };
 
 init();
