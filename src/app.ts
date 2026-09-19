@@ -310,8 +310,6 @@ const init = async () => {
 			});
 		}
 	} else if (isCheckoutPath) {
-		console.log('isCheckoutPath :>> ', isCheckoutPath);
-
 		const checkoutObserver = new MutationObserver(() =>
 			addCheckoutBorders(data)
 		);

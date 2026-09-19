@@ -13,7 +13,6 @@ export const getEntryFromData = (data: IGames, titleEl: HTMLElement | null) => {
 	if (!entry) {
 		return;
 	}
-	console.log('entryKey :>> ', entryKey);
 
 	if (entryKey === 'metamorphosis' && title !== 'Metamorphosis') {
 		return;
