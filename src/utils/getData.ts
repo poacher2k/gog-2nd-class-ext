@@ -10,8 +10,9 @@ const LAST_FETCHED_STORAGE_KEY = 'gog-2nd-helper-last-fetched';
 const ONE_SECOND = 1000;
 const ONE_MINUTE = ONE_SECOND * 60;
 const ONE_HOUR = ONE_MINUTE * 60;
+const SIX_HOURS = ONE_HOUR * 6;
 const ONE_DAY = ONE_HOUR * 24;
-const MAX_DATA_AGE = ONE_DAY;
+const MAX_DATA_AGE = SIX_HOURS;
 
 const getStorageData = async () => {
 	try {
@@ -28,9 +29,8 @@ const getStorageData = async () => {
 			return null;
 		}
 
-		const storageDataObj = await browser.storage.local.get(
-			DATA_STORAGE_KEY
-		);
+		const storageDataObj =
+			await browser.storage.local.get(DATA_STORAGE_KEY);
 
 		const storageData = storageDataObj[DATA_STORAGE_KEY];
 
